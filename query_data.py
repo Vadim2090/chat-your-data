@@ -27,7 +27,7 @@ QA_PROMPT = PromptTemplate(template=template, input_variables=["question", "cont
 
 
 def get_chain(vectorstore):
-    llm = OpenAI(temperature=0, openai_api_key='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')  # Don't forget to add your OpenAI API Key
+    llm = OpenAI(temperature=0, openai_api_key='')  # Don't forget to add your OpenAI API Key
     retriever = VectorStoreRetriever(vectorstore=vectorstore)  # Create a retriever instance
     qa_chain = ConversationalRetrievalChain.from_llm(
         llm,
