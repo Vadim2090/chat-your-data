@@ -1,0 +1,39 @@
+from langchain.prompts.prompt import PromptTemplate
+from langchain.llms import OpenAI
+from langchain.chains import ConversationalRetrievalChain
+from langchain.vectorstores.base import VectorStoreRetriever
+#from langchain.chains import ChatVectorDBChain
+import os
+
+_template = """Учитывая следующий разговор и последующий вопрос, перефразируйте последующий вопрос так, чтобы он был отдельным вопросом.
+Вы можете предположить, что речь идет о последнем запросе о сервисе "Продано".
+
+Chat History:
+{chat_history}
+Follow Up Input: {question}
+Standalone question:"""
+CONDENSE_QUESTION_PROMPT = PromptTemplate.from_template(_template)
+
+template = """You are an AI assistant for answering questions about the most recent "Sold" service address.
+You are given the following extracted parts of a long document and a question. Provide a conversational answer.
+If you don't know the answer, just say "Hmm, I'm not sure." Don't try to make up an answer.
+If the question is not about the most recent info about "Sold" service, politely inform them that you are tuned to only answer questions about the most recent "Sold" service.
+Question: {question}
+=========
+{context}
+=========
+Answer in Markdown:"""
+QA_PROMPT = PromptTemplate(template=template, input_variables=["question", "context"])
+
+
+def get_chain(vectorstore):
+    llm = OpenAI(temperature=0, openai_api_key='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')  # Don't forget to add your OpenAI API Key
+    retriever = VectorStoreRetriever(vectorstore=vectorstore)  # Create a retriever instance
+    qa_chain = ConversationalRetrievalChain.from_llm(
+        llm,
+        retriever,
+        condense_question_prompt=CONDENSE_QUESTION_PROMPT,
+        chain_type='stuff',
+        combine_docs_chain_kwargs={},  # If additional arguments are required, add them here
+    )
+    return qa_chain

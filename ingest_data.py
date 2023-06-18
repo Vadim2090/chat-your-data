@@ -4,6 +4,9 @@ from langchain.vectorstores.faiss import FAISS
 from langchain.embeddings import OpenAIEmbeddings
 import pickle
 
+#API Key
+openai_api_key = "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"
+
 # Load Data
 loader = UnstructuredFileLoader("state_of_the_union.txt")
 raw_documents = loader.load()
@@ -14,7 +17,7 @@ documents = text_splitter.split_documents(raw_documents)
 
 
 # Load Data to vectorstore
-embeddings = OpenAIEmbeddings()
+embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
 vectorstore = FAISS.from_documents(documents, embeddings)
 
 
