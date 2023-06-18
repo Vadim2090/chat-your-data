@@ -5,7 +5,7 @@ from langchain.embeddings import OpenAIEmbeddings
 import pickle
 
 #API Key
-openai_api_key = "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"
+openai_api_key = ""
 
 # Load Data
 loader = UnstructuredFileLoader("state_of_the_union.txt")
